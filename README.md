@@ -20,11 +20,12 @@ database, a Node web service from the `backend/` directory, and a static site fr
 
 ### Backend web service
 - Build command: `npm ci --include=dev && npx prisma generate`
-- Start command: `npx prisma migrate deploy && npm start`
+- Start command: `npx prisma migrate deploy && npm run seed && npm start`
 - Set `DATABASE_URL` to the hosted database's internal connection URL, `JWT_SECRET` to a
   long random secret, and `CORS_ORIGIN` to the static site's exact public HTTPS origin.
-- Set `SEED_EMAIL` and `SEED_PASSWORD` to the first officer's credentials. After the API is
-  deployed, open its Shell and run `npm run seed` once to create that officer.
+- Set `SEED_EMAIL` and `SEED_PASSWORD` to the first officer's login credentials. The start
+  command runs the idempotent seed script before starting the API.
+- Free web services sleep after inactivity, which can delay requests when they wake up.
 
 ### Frontend static site
 - Root directory: `frontend`
@@ -36,5 +37,7 @@ The static-site URL is needed for the backend's `CORS_ORIGIN`; the backend URL i
 the frontend's `VITE_API_URL`. Save both settings and redeploy after setting them. Confirm
 the API at `/api/health`, then sign in using the officer credentials above.
 
-The hosted database is separate from your local PostgreSQL database. This deploy creates
-the schema and first officer, but does not copy local members, loans, or repayments.
+Render's free PostgreSQL databases expire after 30 days and are deleted unless upgraded to
+a paid compute plan. The hosted database is separate from your local PostgreSQL database.
+This deploy creates the schema and first officer, but does not copy local members, loans,
+or repayments.
