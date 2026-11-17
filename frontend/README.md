@@ -9,6 +9,12 @@ React + Vite app built from the Canva designs: Login, Dashboard, Members (list, 
 
 The dev server forwards `/api` calls to `http://localhost:4000`, so no extra CORS setup is needed.
 
+## Production deployment
+For a separate frontend and backend host, set `VITE_API_URL` to the backend's public origin
+(for example, `https://agriledger-api.example.com`, without a trailing slash or `/api`) in
+the frontend host's build environment, then rebuild the frontend. Leave it unset for local
+development.
+
 ## Structure
 - `src/pages/` one file per screen
 - `src/components/` layout (sidebar) and shared pieces (status tags, KPI cards, bar chart)

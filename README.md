@@ -13,5 +13,28 @@ Digital loan and repayment tracking system for agricultural SACCOs (SWE final cl
 4. Open http://localhost:5173 and sign in with the officer from the seed step
    (default `officer@sacco.local` / `ChangeMe123!` unless you changed it in `.env`; change it before any real use).
 
-## Git
-Add a root `.gitignore` containing `node_modules`, `.env` and `dist` before your first commit.
+## Deploy on Render
+The frontend and API are separate services in production. Create a hosted PostgreSQL
+database, a Node web service from the `backend/` directory, and a static site from the
+`frontend/` directory, all in the same region where possible.
+
+### Backend web service
+- Build command: `npm ci --include=dev && npx prisma generate`
+- Start command: `npx prisma migrate deploy && npm start`
+- Set `DATABASE_URL` to the hosted database's internal connection URL, `JWT_SECRET` to a
+  long random secret, and `CORS_ORIGIN` to the static site's exact public HTTPS origin.
+- Set `SEED_EMAIL` and `SEED_PASSWORD` to the first officer's credentials. After the API is
+  deployed, open its Shell and run `npm run seed` once to create that officer.
+
+### Frontend static site
+- Root directory: `frontend`
+- Build command: `npm ci && npm run build`
+- Publish directory: `dist`
+- Set `VITE_API_URL` to the backend's public HTTPS origin (without `/api` or a trailing slash).
+
+The static-site URL is needed for the backend's `CORS_ORIGIN`; the backend URL is needed for
+the frontend's `VITE_API_URL`. Save both settings and redeploy after setting them. Confirm
+the API at `/api/health`, then sign in using the officer credentials above.
+
+The hosted database is separate from your local PostgreSQL database. This deploy creates
+the schema and first officer, but does not copy local members, loans, or repayments.

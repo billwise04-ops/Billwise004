@@ -1,5 +1,6 @@
 // Small fetch wrapper: adds the login token, and turns API errors into readable messages.
 const TOKEN_KEY = 'agriledger_token';
+const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
 export const getToken = () => localStorage.getItem(TOKEN_KEY);
 export const setToken = (token) => (token ? localStorage.setItem(TOKEN_KEY, token) : localStorage.removeItem(TOKEN_KEY));
@@ -19,7 +20,7 @@ async function request(method, path, body) {
 
   let res;
   try {
-    res = await fetch(`/api${path}`, { method, headers, body: body !== undefined ? JSON.stringify(body) : undefined });
+    res = await fetch(`${API_BASE_URL}/api${path}`, { method, headers, body: body !== undefined ? JSON.stringify(body) : undefined });
   } catch {
     throw new ApiError('Cannot reach the server. Is the backend running?', 0);
   }
